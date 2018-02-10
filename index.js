@@ -1,18 +1,20 @@
 
 
 class Game{
-    turn = 0;
-    gameState = true;
-    winner = 0;
-    board = [[0,0,0],[0,0,0],[0,0,0]];
+    constructor(){
+        this.turn = 0;
+        this.gameState = true;
+        this.winner = 0;
+        this.board = [[0,0,0],[0,0,0],[0,0,0]];
+    }
 }
   
   class Player{
     constructor(name, symbol){
       this.name = name;
-      this.symbol = turn;
+      this.symbol = symbol;
+      this.starts = undefined;
     }
-    starts = undefined;
   }
   
   let game = new Game();
@@ -20,12 +22,15 @@ class Game{
   let jarvis = new Player('jarvis', 'panorama_fish_eye');
   
   function startGame(player){
+      let selectPlayer = document.getElementById('player');
+      selectPlayer.classList.add("active");
       if(game.turn !== 0){
         return;
       } 
-      game.turn =1;
       console.log(player);
-      if(player === 'human'){
+      game.turn = 1;
+
+      if(player == 1){
         human.starts = 1;
         jarvis.starts = 2;
      }else{
@@ -37,31 +42,29 @@ class Game{
   
   function clicked(x, y){
     
-    console.log(x,y);
-    if(game.board[x][y] === 0){
-      
-       game.board[x][y] = game.turn;
-       toogleTurn();
-       
+    //console.log(x,y);
+    //console.log(game);
+    if(game.board[x][y] == 0){
+       console.log(game.board[x][y], game.turn);
+       game.board[x][y] = parseInt(game.turn);
        let position = "i"+x+y;
-       console.log(place);
-      
        placeMove(position);
-      
+       toogleTurn();
     }
      
   }
   
   function placeMove(position){
+      
       let node = document.createElement("i"); 
       let symbol;
       
       if(game.turn == 1){
-         if(humans.starts == 1) symbol = human.starts;
-         else symbol = jarvis.starts;
+         if(human.starts == 1) symbol = human.symbol;
+         else symbol = jarvis.symbol;
       }else{
-        if(humans.starts == 2) symbol = human.starts;
-         else symbol = jarvis.starts;
+        if(human.starts == 2) symbol = human.symbol;
+         else symbol = jarvis.symbol;
       }
       
       let textnode = document.createTextNode(symbol); 
@@ -73,7 +76,8 @@ class Game{
   }
   
   function toogleTurn(){
-    game.turn = game.trun%2+1;
+    game.turn = game.turn%2 + 1;
+
   }
   
   

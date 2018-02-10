@@ -14,12 +14,12 @@ body{
     padding:10px;
   }
   
-  .player{
+  .active{
     background-color: #0FC9E7;
   }
   
-  .computer{
-    background-color: 
+  .player:hover{
+    background-color: #0FC9E7;
   }
   
   .container{

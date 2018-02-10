@@ -21,7 +21,7 @@ body{
   .player:hover{
     background-color: #0FC9E7;
   }
-  
+
   .container{
     margin:auto auto;
     margin-top:50px;
@@ -47,8 +47,7 @@ body{
   }
   
   i{
-    font-weight: 30;
     margin-top:20px;
     font-size:60px;
-    color:red;
+    color:#0D95DC;
   }

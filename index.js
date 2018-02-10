@@ -44,12 +44,14 @@ class Game{
     
     //console.log(x,y);
     //console.log(game);
-    if(game.board[x][y] == 0){
-       console.log(game.board[x][y], game.turn);
+    if(game.board[x][y] == 0 && game.turn != 0){
+    //    console.log(game.board[x][y], game.turn);
+       winingCondition();
        game.board[x][y] = parseInt(game.turn);
        let position = "i"+x+y;
        placeMove(position);
        toogleTurn();
+       // TO DO: if jarvis turn do some magic to make a move
     }
      
   }
@@ -77,8 +79,38 @@ class Game{
   
   function toogleTurn(){
     game.turn = game.turn%2 + 1;
-
   }
   
-  
-  
+
+  //TO DO: check wining condition
+  /*
+  function winingCondition(){
+          let  i;
+          let pre = game.board[0][0];
+          let f =1;
+          for( i = 0 ; i<2;i++){
+              if(pre != game.board[0][i] ){
+                  f = 0;
+                  break;
+              }
+          } 
+          if(f == 1) game.state = false;
+
+          for( i = 0 ; i<2;i++){
+            if(pre != game.board[i][0] ){
+                f = 0;
+                break;
+            }
+          } 
+          if(f == 1) game.state = false;
+
+          for( i = 0 ; i<2;i++){
+            if(pre != game.board[i][i] ){
+                f = 0;
+                break;
+            }
+          } 
+          if(f == 1) game.state = false;
+      }
+  }
+  */

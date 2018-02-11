@@ -21,7 +21,7 @@ body{
   .player:hover{
     background-color: #0FC9E7;
   }
-
+  
   .container{
     margin:auto auto;
     margin-top:50px;
@@ -53,3 +53,43 @@ body{
     text-align: center;
     color:#0D95DC;
   }
+
+ .judge-card{
+   position: absolute;
+   top:50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   background-color: rgba(190, 230, 233, 0.86);
+   width:400px;
+   height:400px;
+   border-radius: 10px;
+   align-items:center;
+   text-align: center; 
+ } 
+
+ .judge-card h1{
+   font-size:60px;
+   font-weight:100;
+   margin-top:160px;
+ }
+
+ #judgement{
+   visibility: hidden;
+ }
+
+
+
+
+  /* @keyframes rotate-text{
+    from {color: #00FFB8;}
+    to {color: #4C00FF;}
+  }
+.j-text-active{
+  animation-name:rotate-text;
+  animation-duration:5s;
+} */
+
+/* .player2-active{
+  transition-duration: 6s ;
+  transform: rotateY(360deg);
+} */

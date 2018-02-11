@@ -47,7 +47,7 @@ class Game{
     //console.log(x,y);
     //console.log(game);
     if(game.board[x][y] == 0 && game.turn != 0){
-    //    console.log(game.board[x][y], game.turn);
+       //console.log(game.board[x][y], game.turn);
        //winingCondition();
        game.board[x][y] = parseInt(game.turn);
        let position = "i"+x+y;

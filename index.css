@@ -46,8 +46,10 @@ body{
     background-color: lightgrey;
   }
   
-  i{
-    margin-top:20px;
+  .material-icons{
+    margin-top:38px;
+    margin-bottom:38px;
     font-size:60px;
+    text-align: center;
     color:#0D95DC;
   }

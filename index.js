@@ -24,7 +24,7 @@ let human = new Player('human', 'clear');
 let jarvis = new Player('jarvis', 'panorama_fish_eye');
 
 function startGame(player) {
-
+  
   if (game.turn !== 0) {
       return;
   }
@@ -48,9 +48,14 @@ function startGame(player) {
 function clicked(x, y) {
 
   if (game.board[x][y] == 0 && game.turn != 0) {
-     //winingCondition();
+    
      humanPlay(x,y);
-     jarvisPlay();
+     //gameEnd();
+     let turn =  game.turn;
+     game.turn = 0;
+     jarvisThink();
+     setTimeout(function(){jarvisPlay(turn)}, 6000);
+     gameEnd();
   }
 
 }
@@ -90,38 +95,6 @@ function toogleTurn() {
 }
 
 
-//TO DO: check wining condition
-/*
-function winingCondition(){
-        let  i;
-        let pre = game.board[0][0];
-        let f =1;
-        for( i = 0 ; i<2;i++){
-            if(pre != game.board[0][i] ){
-                f = 0;
-                break;
-            }
-        } 
-        if(f == 1) game.state = false;
-
-        for( i = 0 ; i<2;i++){
-          if(pre != game.board[i][0] ){
-              f = 0;
-              break;
-          }
-        } 
-        if(f == 1) game.state = false;
-
-        for( i = 0 ; i<2;i++){
-          if(pre != game.board[i][i] ){
-              f = 0;
-              break;
-          }
-        } 
-        if(f == 1) game.state = false;
-    }
-}
-*/
 
 function humanPlay(x, y){
   game.board[x][y] = game.turn;
@@ -131,8 +104,9 @@ function humanPlay(x, y){
   // TODO: if jarvis turn do some magic to make a move
 }
 
-function jarvisPlay() {
+function jarvisPlay(turn) {
   // make a move from empty cells
+  game.turn = turn;
   let move, x, y, position;
   move = getRandomEmptyMove();
   x = move[0];
@@ -155,4 +129,108 @@ function getRandomEmptyMove(){
   //console.log(emptyCells[1]);
   let randomMove =  Math.floor(Math.random()*emptyCells.length);
   return emptyCells[randomMove];
+
+  // replace above code with AI algorithm
+  return findBestMove();
+}
+
+
+function gameEnd(){
+  let card = document.getElementById("judgement");
+  card.style.visibility="visible";
+}
+
+
+
+
+
+function jarvisThink(){
+  console.log("hi");
+  // let text = document.getElementById('player2');
+  // text.style.transform="rotateX(180deg)";
+  // text.style.transition="linear 5s";
+  // text.classList.add("player2-active");
+  // setTimeout( function(){text.classList.remove("j-text-active");}, 4000);
+}
+
+function findBestMove(){
+  let  i, j, maxValue,a=[[0,0,0][0,0,0][0,0,0]];
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+       a[i][j] = game.board[i][j];
+    }
+  }
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+      if(a[i][j] == 0){
+        maxValue = max(maxValue , minMax(i,j));
+      }
+    }
+  }
+}
+
+function minMax(a, x, y){
+  if(jarvisWins(a) === true){
+    return true;
+  }
+  if(humanWins(a) === true){
+    return true;
+  }
+  if(gameDraw(a) === true ){
+    return 0;
+  }
+
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+      if(a[i][j] == 0){
+        maxValue = max(maxValue , minMax(a, i, j));
+      }
+    }
+  }
+
+}
+
+function gameDraw(a){
+  let  i, j, count = 0;
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+     if(a[i][j] == 0){
+       count++;
+     }
+    }
+  }
+  return count == 0 ? true : false;
+}
+
+function humanWins(a){
+  let i;
+   for(i=0;i<3;i++){
+    if(check(a, 1, i, 0, i, 1) === true) return true;
+    if(check(a, 1, 0, i, 1, i) === true) return true;
+    
+   }
+   if(check(a, 1, 0, 0, 1, 1) === true) return true;
+   if(check(a, 1, 0, 2, 1, -1) === true) return true;
+   return false;
+}
+
+function jarvisWins(a){
+  let i
+  for(i=0;i<3;i++){
+    if(check(a, 2, i, 0, 0, 1) === true) return true;
+    if(check(a, 2, 0, i, 1, 0) === true) return true;
+   }
+   if(check(a, 2, 0, 0, 1, 1) === true) return true;
+   if(check(a, 2, 0, 2, 1, -1) === true) return true;
+   return false;
+}
+
+function check(a, id, x, y, r, c){
+  let  i;
+   for(i=0;i<3;i++){
+      if( a[x][y] !== id) return false;
+      x = x + r;
+      y = y + c;
+   }
+   return true;
 }

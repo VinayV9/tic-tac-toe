@@ -22,21 +22,23 @@ class Game{
   let jarvis = new Player('jarvis', 'panorama_fish_eye');
   
   function startGame(player){
-      let selectPlayer = document.getElementById('player');
-      selectPlayer.classList.add("active");
+      
       if(game.turn !== 0){
         return;
       } 
-      console.log(player);
+
+      let selectPlayer = document.getElementById('player'+player);
+      selectPlayer.classList.add("active");
+    
       game.turn = 1;
 
       if(player == 1){
         human.starts = 1;
         jarvis.starts = 2;
-     }else{
+      }else{
         jarvis.starts = 1;
         human.starts = 2;
-     }
+      }
      
   }
   
@@ -78,7 +80,16 @@ class Game{
   }
   
   function toogleTurn(){
+    let selectPlayer;
+
+    selectPlayer = document.getElementById('player'+game.turn);
+    selectPlayer.classList.remove("active");
+
     game.turn = game.turn%2 + 1;
+
+    selectPlayer = document.getElementById('player'+game.turn);
+    selectPlayer.classList.add("active");
+    
   }
   
 

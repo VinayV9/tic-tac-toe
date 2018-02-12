@@ -22,6 +22,7 @@ let game,human,jarvis;
 
 
 function newGame(){
+  alert("click on human for firstmove else click on jarvis ");
   game = new Game();
   human = new Player('human', 'clear');
   jarvis = new Player('jarvis', 'panorama_fish_eye');

@@ -4,9 +4,9 @@ class Game {
   constructor() {
     this.turn = 0;
     this.gameState = true;
-    this.winner = 0;
     this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
     this.moves = 0;
+    this.winner= '';
   }
 }
 
@@ -18,32 +18,35 @@ class Player {
   }
 }
 
+let game,human,jarvis;
 
 
-let game = new Game();
-let human = new Player('human', 'clear');
-let jarvis = new Player('jarvis', 'panorama_fish_eye');
+function newGame(){
+  game = new Game();
+  human = new Player('human', 'clear');
+  jarvis = new Player('jarvis', 'panorama_fish_eye');
+  gameReset();
+}
 
 function startGame(player) {
   
   if (game.turn !== 0) {
       return;
+  }else{
+      let selectPlayer = document.getElementById('player' + player);
+      selectPlayer.classList.add("active");
+    
+      if (player == 1) {
+        game.turn = 1;
+        human.starts = 1;
+        jarvis.starts = 2;
+      } else {
+        game.turn = 2;
+        jarvis.starts = 1;
+        human.starts = 2;
+        jarvisPlay(game.turn);
+      }
   }
-
-  let selectPlayer = document.getElementById('player' + player);
-  selectPlayer.classList.add("active");
-
-  if (player == 1) {
-    game.turn = 1;
-    human.starts = 1;
-    jarvis.starts = 2;
-  } else {
-    game.turn = 1;
-    jarvis.starts = 1;
-    human.starts = 2;
-    jarvisPlay();
-  }
-
 }
 
 function clicked(x, y) {
@@ -51,30 +54,50 @@ function clicked(x, y) {
   if (game.board[x][y] == 0 && game.turn != 0) {
      
      humanPlay(x,y);
-     checkGameState();
-     if(game.moves==0){
-      let turn =  game.turn;
-      game.turn = 0;
-      jarvisThink();
-      setTimeout(function(){jarvisPlay(turn)}, 0);
-      checkGameState();
+     if(game.moves<9){
+        let turn =  game.turn;
+        game.turn = 0;
+        setTimeout(function(){jarvisPlay(turn)}, 0);
      }
      
   }
 
 }
 
+function gameReset(){
+  let i,j,item;
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+       item = document.getElementById('i'+i+j);
+       if (item.hasChildNodes()) {
+        item.removeChild(item.childNodes[0]);
+       }
+    }
+  }
+  let clsPlayer = document.getElementsByClassName('player');
+  
+  if(clsPlayer[0].classList.contains('p-1')){
+    clsPlayer[0].classList.remove("active");
+  }
+  if(clsPlayer[1].classList.contains('p-1')){
+    clsPlayer[1].classList.remove("active");
+  }
+
+  let text = document.getElementById("result");
+  text.innerHTML = "";
+
+  let card = document.getElementById("judgement");
+  card.style.visibility="hidden";
+}
 function placeMove(position) {
 
   let node = document.createElement("i");
   let symbol;
 
   if (game.turn == 1) {
-    if (human.starts == 1) symbol = human.symbol;
-    else symbol = jarvis.symbol;
+    symbol = human.symbol;
   } else {
-    if (human.starts == 2) symbol = human.symbol;
-    else symbol = jarvis.symbol;
+    symbol = jarvis.symbol;
   }
 
   let textnode = document.createTextNode(symbol);
@@ -101,15 +124,18 @@ function toogleTurn() {
 
 
 function humanPlay(x, y){
+  game.moves += 1;
   game.board[x][y] = game.turn;
   let position = "i" + x + y;
   placeMove(position);
   toogleTurn();
+  checkGameState();
   // TODO: if jarvis turn do some magic to make a move
 }
 
 function jarvisPlay(turn) {
   // make a move from empty cells
+  game.moves += 1;
   game.turn = turn;
   let move, x, y, position;
   move = getRandomEmptyMove();
@@ -119,6 +145,7 @@ function jarvisPlay(turn) {
   position = "i" + x + y;
   placeMove(position);
   toogleTurn();
+  checkGameState();
 }
 
 function getRandomEmptyMove(){
@@ -152,26 +179,24 @@ function checkGameState(){
   }
   if(gameDraw(game.board) === true) {
     gameEnd(0);
-    retrun;
+    return;
   }
   
 }
 
 function gameEnd(winner){
   let card = document.getElementById("judgement");
-  let gameWinner = '';
   if(winner === 0){
-     gameWinner = "Game Draw";
-  }
-  if(winner === 1){
-    gameWinner = "Jarvis Win";
+     game.winner = "Game Draw";
   }
   if(winner === 2){
-    gameWinner = "You Win";
+    game.winner = "Jarvis Win";
   }
-  console.log(gameWinner);
+  if(winner === 1){
+    game.winner = "You Win";
+  }
   let result = document.getElementById("result");
-  let textnode = document.createTextNode(gameWinner);
+  let textnode = document.createTextNode(game.winner);
   result.appendChild(textnode);
   card.style.visibility="visible";
 }
@@ -195,7 +220,6 @@ function findBestMove(){
   let a = [[0,0,0],[0,0,0],[0,0,0]], move = [0,0];
   for(i=0;i<3;i++){
     for(j=0;j<3;j++){
-       console.log(game.board[i][j], a[i][j]);
        a[i][j] = game.board[i][j];
     }
   }

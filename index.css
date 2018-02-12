@@ -46,11 +46,12 @@ body{
     background-color: lightgrey;
   }
   
-  .material-icons{
-    margin-top:38px;
-    margin-bottom:38px;
-    font-size:60px;
+  .item  .material-icons{
+    margin-top:22px;
+    margin-bottom:22px;
+    font-size:55px;
     text-align: center;
+    font-weight: 150;
     color:#0D95DC;
   }
 
@@ -77,7 +78,23 @@ body{
    visibility: hidden;
  }
 
+.newGame{
+  background-color: #CE4553;
+  padding:5px;
+  position: relative;
+  width:30px;
+  height: 30px;
+  float: right;
+  top:10px;
+  right:10px;
+  border-radius:3px;
+  border:solid 1px silver;
+  text-align: center;
+}
 
+.newGame:hover{
+  background-color: #EB3E06;
+}
 
 
   /* @keyframes rotate-text{

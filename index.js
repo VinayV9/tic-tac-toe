@@ -6,6 +6,7 @@ class Game {
     this.gameState = true;
     this.winner = 0;
     this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    this.moves = 0;
   }
 }
 
@@ -37,7 +38,7 @@ function startGame(player) {
     human.starts = 1;
     jarvis.starts = 2;
   } else {
-    game.turn = 2;
+    game.turn = 1;
     jarvis.starts = 1;
     human.starts = 2;
     jarvisPlay();
@@ -48,14 +49,17 @@ function startGame(player) {
 function clicked(x, y) {
 
   if (game.board[x][y] == 0 && game.turn != 0) {
-    
+     
      humanPlay(x,y);
-     //gameEnd();
-     let turn =  game.turn;
-     game.turn = 0;
-     jarvisThink();
-     setTimeout(function(){jarvisPlay(turn)}, 6000);
-     gameEnd();
+     checkGameState();
+     if(game.moves==0){
+      let turn =  game.turn;
+      game.turn = 0;
+      jarvisThink();
+      setTimeout(function(){jarvisPlay(turn)}, 0);
+      checkGameState();
+     }
+     
   }
 
 }
@@ -118,25 +122,57 @@ function jarvisPlay(turn) {
 }
 
 function getRandomEmptyMove(){
-  let emptyCells = [];
-  for(i = 0; i < 3; i++){
-    for(j = 0 ;j < 3; j++){
-        if(game.board[i][j] == 0){
-          emptyCells.push([i,j]);
-        }
-    }
-  }
-  //console.log(emptyCells[1]);
-  let randomMove =  Math.floor(Math.random()*emptyCells.length);
-  return emptyCells[randomMove];
+  // let emptyCells = [];
+  // for(i = 0; i < 3; i++){
+  //   for(j = 0 ;j < 3; j++){
+  //       if(game.board[i][j] == 0){
+  //         emptyCells.push([i,j]);
+  //       }
+  //   }
+  // }
+  // //console.log(emptyCells[1]);
+  // let randomMove =  Math.floor(Math.random()*emptyCells.length);
+  // return emptyCells[randomMove];
 
   // replace above code with AI algorithm
   return findBestMove();
 }
 
 
-function gameEnd(){
+
+function checkGameState(){
+  //console.log("hello virus");
+  if(humanWins(game.board) === true) {
+     gameEnd(1);
+     return;
+  }
+  if(jarvisWins(game.board) === true) {
+    gameEnd(2);
+    return;
+  }
+  if(gameDraw(game.board) === true) {
+    gameEnd(0);
+    retrun;
+  }
+  
+}
+
+function gameEnd(winner){
   let card = document.getElementById("judgement");
+  let gameWinner = '';
+  if(winner === 0){
+     gameWinner = "Game Draw";
+  }
+  if(winner === 1){
+    gameWinner = "Jarvis Win";
+  }
+  if(winner === 2){
+    gameWinner = "You Win";
+  }
+  console.log(gameWinner);
+  let result = document.getElementById("result");
+  let textnode = document.createTextNode(gameWinner);
+  result.appendChild(textnode);
   card.style.visibility="visible";
 }
 
@@ -145,7 +181,7 @@ function gameEnd(){
 
 
 function jarvisThink(){
-  console.log("hi");
+  //console.log("hi");
   // let text = document.getElementById('player2');
   // text.style.transform="rotateX(180deg)";
   // text.style.transition="linear 5s";
@@ -154,40 +190,73 @@ function jarvisThink(){
 }
 
 function findBestMove(){
-  let  i, j, maxValue,a=[[0,0,0][0,0,0][0,0,0]];
+
+  let  i, j; 
+  let a = [[0,0,0],[0,0,0],[0,0,0]], move = [0,0];
   for(i=0;i<3;i++){
     for(j=0;j<3;j++){
+       console.log(game.board[i][j], a[i][j]);
        a[i][j] = game.board[i][j];
     }
   }
+ let bestMove = -100000,currentMove;
   for(i=0;i<3;i++){
     for(j=0;j<3;j++){
-      if(a[i][j] == 0){
-        maxValue = max(maxValue , minMax(i,j));
-      }
+        if(a[i][j] == 0){
+          
+          a[i][j] = 2;
+          currentMove = minMax(a, i, j, 1);
+          a[i][j] = 0;
+
+          if(bestMove < currentMove){
+            bestMove = currentMove;
+            move[0]=i;
+            move[1]=j;
+          }
+        }
     }
   }
+  return move;
 }
 
-function minMax(a, x, y){
+function minMax(a, x, y, player){
+  //console.log(a);
   if(jarvisWins(a) === true){
-    return true;
+    return 10;
   }
   if(humanWins(a) === true){
-    return true;
+    return -10;
   }
-  if(gameDraw(a) === true ){
+  if(gameDraw(a) === true){
     return 0;
   }
-
-  for(i=0;i<3;i++){
-    for(j=0;j<3;j++){
-      if(a[i][j] == 0){
-        maxValue = max(maxValue , minMax(a, i, j));
+  if(player === 2){
+    let  maxValue = -10000;
+    for(let i=0;i<3;i++){
+      for(let j=0;j<3;j++){
+        if(a[i][j] == 0){
+          // console.log(typeof(player));
+          a[i][j] = player;
+          maxValue = Math.max(maxValue , minMax(a, i, j, 1));
+          a[i][j] = 0;
+        }
       }
     }
+    return maxValue;
+  }else{
+    let minValue = 10000;
+    for(let i=0;i<3;i++){
+      for(let j=0;j<3;j++){
+        if(a[i][j] == 0){
+          a[i][j] = player;
+          minValue = Math.min(minValue , minMax(a, i, j, 2));
+          a[i][j] = 0;
+        }
+      }
+    }
+    return minValue;
   }
-
+  
 }
 
 function gameDraw(a){
@@ -205,8 +274,8 @@ function gameDraw(a){
 function humanWins(a){
   let i;
    for(i=0;i<3;i++){
-    if(check(a, 1, i, 0, i, 1) === true) return true;
-    if(check(a, 1, 0, i, 1, i) === true) return true;
+    if(check(a, 1, i, 0, 0, 1) === true) return true;
+    if(check(a, 1, 0, i, 1, 0) === true) return true;
     
    }
    if(check(a, 1, 0, 0, 1, 1) === true) return true;
